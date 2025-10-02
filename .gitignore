@@ -1,0 +1,4 @@
+tickers_20251001_014406.csv
+src/ticker_fetcher.py
+src/telegram_notifier.py
+test_verification.py
