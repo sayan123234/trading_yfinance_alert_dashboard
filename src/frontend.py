@@ -18,7 +18,7 @@ st.title("📊 Trading Entry Scanner")
 
 # Sidebar controls
 st.sidebar.header("Settings")
-tickers = st.sidebar.multiselect("Select Tickers", config.TICKERS, default=config.TICKERS[:5])
+tickers = st.sidebar.multiselect("Select Tickers", config.TICKERS, default=config.TICKERS)
 timeframes = st.sidebar.multiselect("Select Timeframes", config.TIMEFRAMES, default=config.TIMEFRAMES)
 
 def get_security_name(ticker: str) -> str:
