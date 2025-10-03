@@ -4,7 +4,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 import config
-from monitor import check_ticker_timeframe, _last_signals_cache
+from monitor import check_ticker_timeframe
 import yfinance as yf
 from streamlit_autorefresh import st_autorefresh
 
@@ -43,19 +43,7 @@ def run_scan(tickers, timeframes):
             try:
                 ticker, timeframe, signal, error = future.result()
                 if signal:
-                    sig_key = (ticker, timeframe)
-                    sig_signature = (
-                        signal['trend'],
-                        tuple(signal['swing_points']),
-                        signal['fvg']['type'],
-                        signal['fvg']['top'],
-                        signal['fvg']['bottom'],
-                        signal['target'],
-                        signal['stop_loss']
-                    )
-                    if _last_signals_cache.get(sig_key) != sig_signature:
-                        grouped_signals[ticker].append((timeframe, signal))
-                        _last_signals_cache[sig_key] = sig_signature
+                    grouped_signals[ticker].append((timeframe, signal))
                 elif error:
                     errors.append((ticker, timeframe, error))
             except Exception as e:
