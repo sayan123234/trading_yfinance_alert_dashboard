@@ -14,9 +14,6 @@ import yfinance as yf
 # Cache for security names to avoid repeated API calls
 _security_name_cache = {}
 
-# Cache of last signals to avoid duplicates
-_last_signals_cache = {}
-
 
 def get_security_name(ticker: str) -> str:
     if ticker in _security_name_cache:
@@ -177,19 +174,7 @@ def monitor_tickers():
                         checks_completed += 1
                         
                         if signal:
-                            sig_key = (ticker, timeframe)
-                            sig_signature = (
-                                signal['trend'],
-                                tuple(signal['swing_points']),
-                                signal['fvg']['type'],
-                                signal['fvg']['top'],
-                                signal['fvg']['bottom'],
-                                signal['target'],
-                                signal['stop_loss']
-                            )
-                            if _last_signals_cache.get(sig_key) != sig_signature:
-                                grouped_signals[ticker].append((timeframe, signal))
-                                _last_signals_cache[sig_key] = sig_signature
+                            grouped_signals[ticker].append((timeframe, signal))
                         elif error:
                             errors.append((ticker, timeframe, error))
                     except Exception as e:
@@ -239,19 +224,7 @@ def test_single_scan():
                 ticker, timeframe, signal, error = future.result()
                 
                 if signal:
-                    sig_key = (ticker, timeframe)
-                    sig_signature = (
-                        signal['trend'],
-                        tuple(signal['swing_points']),
-                        signal['fvg']['type'],
-                        signal['fvg']['top'],
-                        signal['fvg']['bottom'],
-                        signal['target'],
-                        signal['stop_loss']
-                    )
-                    if _last_signals_cache.get(sig_key) != sig_signature:
-                        grouped_signals[ticker].append((timeframe, signal))
-                        _last_signals_cache[sig_key] = sig_signature
+                    grouped_signals[ticker].append((timeframe, signal))
                 elif error:
                     errors.append((ticker, timeframe, error))
             except Exception as e:
